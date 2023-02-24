@@ -179,6 +179,9 @@ window.onclick = function(event) {
           Genesys("command", "Messenger.close");
         }
       );
+    var custname = document.getElementById('custname').value
+    var email = document.getElementById('email').value
+    var phonephone = document.getElementById('phone').value
     Genesys("command", "Database.set", {
     messaging: {
     customAttributes: {
