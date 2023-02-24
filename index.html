@@ -143,13 +143,13 @@ hr {
       <p>Please fill in this form to chat with our team.</p>
       <hr>
       <label for="custname"><b>Name</b></label>
-      <input type="text" placeholder="Enter Name" name="custname" required>
+      <input type="text" placeholder="Enter Name" name="custname" id="custname" required>
 
 	  <label for="email"><b>Email</b></label>
-      <input type="text" placeholder="Enter Email" name="email" required>
+      <input type="text" placeholder="Enter Email" name="email" id="email" required>
 
       <label for="phone"><b>Phone</b></label>
-      <input type="text" placeholder="Enter Phone" name="phone" required>
+      <input type="text" placeholder="Enter Phone" name="phone" id="phone" required>
       
       <div class="clearfix">
         <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
@@ -182,9 +182,9 @@ window.onclick = function(event) {
     Genesys("command", "Database.set", {
     messaging: {
     customAttributes: {
-      Name: "custname",
-      Email: "email",
-      Phone: "phone"
+      Name: custname,
+      Email: email,
+      Phone: phone
     }
   }
 });
