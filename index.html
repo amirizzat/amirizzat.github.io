@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="styles.css">
+    <script src="myscripts.js"></script>
     <script type="text/javascript" charset="utf-8">
         (function (g, e, n, es, ys) {
           g['_genesysJs'] = e;
@@ -17,11 +19,55 @@
       </script>
 </head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
-<button id="custom-launcher" onclick="toggleMessenger()">
-    Messenger
-</button>
+    <div class="form">
+        <ul class="tab-group">
+          <li class="tab active"><a href="#chat">Start Chat</a></li>
+        </ul>
+        
+        <div class="tab-content">
+          <div id="chat">           
+            <form action="/" method="post">
+            
+            <div class="top-row">
+              <div class="field-wrap">
+                <label>
+                  First Name<span class="req">*</span>
+                </label>
+                <input type="text" required autocomplete="off" name="fname"/>
+              </div>
+          
+              <div class="field-wrap">
+                <label>
+                  Last Name<span class="req">*</span>
+                </label>
+                <input type="text"required autocomplete="off" name="lname"/>
+              </div>
+            </div>
+    
+            <div class="field-wrap">
+              <label>
+                Email Address<span class="req">*</span>
+              </label>
+              <input type="email"required autocomplete="off" name="email"/>
+            </div>
+              
+              <div class="field-wrap">
+              <label>
+                Phone<span class="req">*</span>
+              </label>
+              <input type="text"required autocomplete="off" name="phone"/>
+            </div>
+                      
+            <button type="submit" id="custom-launcher" onclick="toggleMessenger()" class="button button-block"/>Get Started </button>
+            
+            </form>
+    
+          </div>
+                  
+        </div><!-- tab-content -->
+        
+    </div> <!-- /form -->
+
 <script type="text/javascript">
     function toggleMessenger(){
       Genesys("command", "Messenger.open", {},
@@ -33,9 +79,10 @@
     Genesys("command", "Database.set", {
     messaging: {
     customAttributes: {
-      department: "sales",
-      property_type: "apartment",
-      device: "mobile"
+      First_Name: fname,
+      Last_Name: lname,
+      Email_Address: email,
+      Phone: phone
     }
   }
 });
