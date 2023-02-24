@@ -153,7 +153,7 @@ hr {
       
       <div class="clearfix">
         <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-        <button type="button" onclick="toggleMessenger()" class="signupbtn">Chat</button>
+        <button type="button" onclick="toggleMessenger(document.getElementById('custname').value,document.getElementById('email').value,document.getElementById('phone').value)" class="signupbtn">Chat</button>
       </div>
     </div>
   </form>
@@ -172,16 +172,13 @@ window.onclick = function(event) {
 </script>
 
 <script type="text/javascript">
-    function toggleMessenger(){
+    function toggleMessenger(custname,email,phone){
       Genesys("command", "Messenger.open", {},
         function(o){},  // if resolved
         function(o){    // if rejected
           Genesys("command", "Messenger.close");
         }
       );
-    var custname = document.getElementById('custname').value
-    var email = document.getElementById('email').value
-    var phonephone = document.getElementById('phone').value
     Genesys("command", "Database.set", {
     messaging: {
     customAttributes: {
