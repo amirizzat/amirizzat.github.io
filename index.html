@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.google.com/recaptcha/api.js"></script>
     <script type="text/javascript" charset="utf-8">
         (function (g, e, n, es, ys) {
           g['_genesysJs'] = e;
@@ -116,6 +119,7 @@ hr {
 
 /* Clear floats */
 .clearfix::after {
+
   content: "";
   clear: both;
   display: table;
@@ -152,8 +156,9 @@ hr {
       <input type="text" placeholder="Enter Phone" name="phone" id="phone" required>
       
       <div class="clearfix">
+        <div class="g-recaptcha" data-sitekey="6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB"></div>
         <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-        <button type="button" onclick="toggleMessenger(document.getElementById('custname').value,document.getElementById('email').value,document.getElementById('phone').value)" class="signupbtn">Chat</button>
+        <button type="button" data-sitekey="6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB" data-callback='onSubmit' data-callback='onSubmit' data-action='submit' onclick="toggleMessenger(document.getElementById('custname').value,document.getElementById('email').value,document.getElementById('phone').value)" class="signupbtn">Chat</button>
       </div>
     </div>
   </form>
@@ -168,6 +173,11 @@ window.onclick = function(event) {
   if (event.target == modal) {
     modal.style.display = "none";
   }
+}
+
+//
+function onSubmit(token) {
+    document.getElementById("demo-form").submit();
 }
 </script>
 
