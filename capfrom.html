@@ -7,7 +7,7 @@
     <form>
       <!-- your form fields -->
       <div id="example1"></div>
-      <button type="submit" id="submit-button" disabled>Submit</button>
+      <button type="submit" id="submit-button" >Submit</button>
     </form>
   
     <script>
@@ -17,9 +17,6 @@
           'sitekey' : '6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB',
           'theme' : 'light'
         });
-      };
-      function enableButton() {
-        document.getElementById("submit-button").disabled = false;
       }
       
       function onSubmit(token) {
@@ -27,7 +24,7 @@
         grecaptcha.getResponse(widgetId1)
         // If the response is valid, enable the submit button
         if (grecaptcha.getResponse(widgetId1) =! null)
-        enableButton();
+        alert ("Open Chat");
         else
         alert ("Captcha not valid")
       }
