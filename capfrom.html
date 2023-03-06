@@ -1,19 +1,23 @@
 <head>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+    async defer>
+</script>
   </head>
   <body>
     <form>
       <!-- your form fields -->
-      <div id="example1" class="g-recaptcha" data-sitekey="6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB"></div>
+      <div id="example1"></div>
       <button type="submit" id="submit-button" disabled>Submit</button>
     </form>
   
     <script>
     var widgetId1;
-    widgetId1 = grecaptcha.render('example1', {
+    var onloadCallback = function() {
+        widgetId1 = grecaptcha.render('example1', {
           'sitekey' : '6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB',
           'theme' : 'light'
         });
+      };
       function enableButton() {
         document.getElementById("submit-button").disabled = false;
       }
