@@ -11,7 +11,7 @@
   <script>
 function enableButton() {
   grecaptcha.ready(function() {
-    grecaptcha.execute('6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB', {action: 'submit'}).then(function(token) {
+    grecaptcha.getResponse("6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB", {action: 'submit'}).then(function(token) {
       document.getElementById("submit-button").disabled = false;
     });
   });
