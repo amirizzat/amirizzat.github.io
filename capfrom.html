@@ -1,0 +1,18 @@
+<head>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <form>
+    <!-- your form fields -->
+    <div class="g-recaptcha" data-sitekey="6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB"></div>
+    <button type="submit" id="submit-button" disabled>Submit</button>
+  </form>
+
+  <script>
+    grecaptcha.ready(function() {
+      grecaptcha.execute('6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB', {action: 'submit'}).then(function(token) {
+        document.getElementById("submit-button").disabled = false;
+      });
+    });
+  </script>
+</body>
