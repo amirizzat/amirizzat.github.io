@@ -1,32 +1,26 @@
 <head>
-    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
-    async defer>
-</script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   </head>
   <body>
     <form>
       <!-- your form fields -->
-      <div id="example1"></div>
-      <button type="submit" id="submit-button" >Submit</button>
+      <div class="g-recaptcha" data-sitekey="6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB"></div>
+      <button type="submit" id="submit-button" disabled>Submit</button>
     </form>
   
+    <div id="success-message" style="display:none">
+      Thank you for verifying that you are not a robot.
+    </div>
+  
     <script>
-    var widgetId1;
-    var onloadCallback = function() {
-        widgetId1 = grecaptcha.render('example1', {
-          'sitekey' : '6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB',
-          'theme' : 'light'
-        });
+      function showSuccessMessage() {
+        document.getElementById("success-message").style.display = "block";
       }
       
       function onSubmit(token) {
         // Verify the user's response on your server
-        grecaptcha.getResponse(widgetId1)
-        // If the response is valid, enable the submit button
-        if (grecaptcha.getResponse(widgetId1) =! null)
-        alert ("Open Chat");
-        else
-        alert ("Captcha not valid")
+        // If the response is valid, show the success message
+        showSuccessMessage();
       }
     </script>
   </body>
