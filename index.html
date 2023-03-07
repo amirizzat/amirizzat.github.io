@@ -3,8 +3,7 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
-        async defer>
+    <script src="https://www.google.com/recaptcha/api.js" async defer>
     </script>
     <script type="text/javascript" charset="utf-8">
         (function (g, e, n, es, ys) {
@@ -158,9 +157,9 @@ hr {
       <input type="text" placeholder="Enter Phone" name="phone" id="phone" required>
       
       <div class="clearfix">
-        <div class="g-recaptcha" data-sitekey="6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB"></div>
+        <div id='widget1' class="g-recaptcha" data-sitekey="6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB"></div>
         <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-        <button type="button" onclick="toggleMessenger(document.getElementById('custname').value,document.getElementById('email').value,document.getElementById('phone').value)" class="signupbtn">Chat</button>
+        <button type="button" onclick="toggleMessenger(document.getElementById('custname').value,document.getElementById('email').value,document.getElementById('phone').value,'0')" class="signupbtn">Chat</button>
       </div>
     </div>
   </form>
@@ -188,24 +187,46 @@ function enableButton() {
 </script>
 
 <script type="text/javascript">
-    function toggleMessenger(custname,email,phone){
-
-      Genesys("command", "Messenger.open", {},
-        function(o){},  // if resolved
-        function(o){    // if rejected
+   /* function toggleMessenger(custname,email,phone){
+      var captchaval = grecaptcha.getResponse(widget1)
+        if (true){
+          Genesys("command", "Messenger.open", {},
+          function(o){},  // if resolved
+          function(o){    // if rejected
           Genesys("command", "Messenger.close");
         }
       );
-    Genesys("command", "Database.set", {
-    messaging: {
-    customAttributes: {
-      Name: custname,
-      Email: email,
-      Phone: phone
-    }
+        Genesys("command", "Database.set", {
+        messaging: {
+        customAttributes: {
+          Name: custname,
+          Email: email,
+          Phone: phone
+        }
+      }
+    });
+        }
+        else {
+          alert("Please submit captcha")
+        }
+    }*/
+    function toggleMessenger(custname,email,phone,captcha){
+      Genesys("command", "Messenger.open", {},
+          function(o){},  // if resolved
+          function(o){    // if rejected
+          Genesys("command", "Messenger.close");
+        }
+      );
+        Genesys("command", "Database.set", {
+        messaging: {
+        customAttributes: {
+          Name: custname,
+          Email: email,
+          Phone: phone
+        }
+      }
+    });
   }
-});
-    }
 </script>
 </body>
 </html>
