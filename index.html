@@ -157,9 +157,23 @@ hr {
       <input type="text" placeholder="Enter Phone" name="phone" id="phone" required>
       
       <div class="clearfix">
-        <div id='widget1' class="g-recaptcha" data-sitekey="6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB"></div>
+        <div
+        class="g-recaptcha"
+        data-sitekey="6LdHCcskAAAAAE7d9np2_uGpRw5_M5TmROc-eDwB"
+        data-callback="callback"
+      ></div>
         <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-        <button type="button" onclick="toggleMessenger(document.getElementById('custname').value,document.getElementById('email').value,document.getElementById('phone').value,'0')" class="signupbtn">Chat</button>
+        <button type="button" id="submit-button" onclick="toggleMessenger(document.getElementById('custname').value,document.getElementById('email').value,document.getElementById('phone').value)" class="signupbtn" disabled>Chat</button>
+        
+        <script type="text/javascript">
+          // Enable button
+          function callback() {
+            //Do captcha validtion here
+            const submitButton = document.getElementById("submit-button");
+            submitButton.removeAttribute("disabled");
+          }
+        </script>
+
       </div>
     </div>
   </form>
@@ -176,14 +190,6 @@ window.onclick = function(event) {
   }
 }
 
-// Enable button
-function enableButton() {
-  grecaptcha.ready(function() {
-    grecaptcha.execute('your_site_key', {action: 'submit'}).then(function(token) {
-      document.getElementById("submit-button").disabled = false;
-    });
-  });
-}
 </script>
 
 <script type="text/javascript">
