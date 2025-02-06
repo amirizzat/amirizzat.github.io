@@ -174,6 +174,9 @@
       onclick="toggleMessenger(document.getElementById('custname').value,document.getElementById('email').value,document.getElementById('phone').value)"
       class="signupbtn">Chat</button>
 
+      <!-- Button to Clear Conversation -->
+    <button onclick="clearConversation()">Clear Conversation</button>
+
     <script type="text/javascript">
       // Enable button
       function callback() {
@@ -239,6 +242,28 @@
         }
       });
     }
+      // Initialize Genesys Messenger
+      window.Genesys("subscribe", "Messenger.ready", function () {
+      console.log("Genesys Messenger is ready");
+
+      // Subscribe to conversation updates
+      window.Genesys("subscribe", "MessagingService.conversationUpdated", function (event) {
+          console.log("Conversation Updated: ", event);
+      });
+  });
+
+  // Function to Clear the Conversation
+  function clearConversation() {
+      console.log("Attempting to clear conversation...");
+
+      window.Genesys("command", "MessagingService.clearConversation")
+          .then(() => {
+              console.log("Conversation successfully cleared.");
+          })
+          .catch((error) => {
+              console.error("Failed to clear conversation: ", error);
+          });
+  }
   </script>
 </body>
 
