@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genesys Cloud Knowledge Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+        }
+        header {
+            background-color: #23303f;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+        }
+        main {
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+        }
+        footer {
+            background-color: #23303f;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+  <script type="text/javascript" charset="utf-8">
+  (function (g, e, n, es, ys) {
+    g['_genesysJs'] = e;
+    g[e] = g[e] || function () {
+      (g[e].q = g[e].q || []).push(arguments)
+    };
+    g[e].t = 1 * new Date();
+    g[e].c = es;
+    ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8'; document.head.appendChild(ys);
+  })(window, 'Genesys', 'https://apps.mypurecloud.com.au/genesys-bootstrap/genesys.min.js', {
+    environment: 'prod-apse2',
+    deploymentId: '764fcf20-22c2-4e01-ab1c-d8a1b3cca743'
+  });
+</script>
+    <h1>Genesys Cloud Knowledge Portal</h1>
+</header>
+
+<main>
+    <h2>Welcome to the Knowledge Base</h2>
+    <p>Search articles, guides, and FAQs to help you use Genesys Cloud more effectively.</p>
+
+    <input type="text" placeholder="Search Knowledge Base..." style="width:100%;padding:10px;font-size:16px;">
+
+    <section>
+        <h3>Popular Topics:</h3>
+        <ul>
+            <li><a href="#">Getting Started with Genesys Cloud</a></li>
+            <li><a href="#">User Management Guide</a></li>
+            <li><a href="#">Troubleshooting Common Issues</a></li>
+        </ul>
+    </section>
+</main>
+
+<footer>
+    &copy; 2024 Genesys Cloud Knowledge Portal
+</footer>
+
+  Genesys("command", "Messenger.open", {}, function(o) {}, function(e) {});
+</script>
+
+</body>
+</html>
