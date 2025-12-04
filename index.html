@@ -254,7 +254,7 @@
     // Initialize Genesys Messenger
     window.Genesys("subscribe", "Messenger.ready", function () {
       console.log("Genesys Messenger is ready");
-
+  
       // Subscribe to conversation updates
       window.Genesys("subscribe", "MessagingService.conversationUpdated", function (event) {
         console.log("Conversation Updated: ", event);
@@ -264,27 +264,36 @@
     // Function to Clear the Conversation
     function clearConversation() {
       console.log("Attempting to clear conversation...");
-
-      window.Genesys("command", "MessagingService.clearConversation")
-        .then(() => {
+    
+      window.Genesys(
+        "command",
+        "MessagingService.clearConversation",
+        {},
+        function () {
           console.log("Conversation successfully cleared.");
-        })
-        .catch((error) => {
-          console.error("Failed to clear conversation: ", error);
-        });
+        },
+        function (error) {
+          console.error("Failed to clear conversation:", error);
+        }
+      );
     }
-
+    
     function clearMessenger() {
       console.log("Attempting to clear Messenger...");
-
-      window.Genesys("command", "Messenger.clear")
-        .then(() => {
-          console.log("Conversation successfully cleared.");
-        })
-        .catch((error) => {
-          console.error("Failed to clear Messenger: ", error);
-        });
+    
+      window.Genesys(
+        "command",
+        "Messenger.clear",
+        {},
+        function () {
+          console.log("Messenger successfully cleared.");
+        },
+        function (error) {
+          console.error("Failed to clear Messenger:", error);
+        }
+      );
     }
+
 
   // function toaster(){
   //   Genesys("subscribe", "Toaster.ready", () => {
