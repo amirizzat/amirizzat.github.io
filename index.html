@@ -181,6 +181,9 @@
     <!-- Button to Clear Conversation -->
     <button onclick="clearConversation()">Clear Conversation</button>
     <!-- <button onclick="toaster()">Survey</button> -->
+    <!-- Button to Clear Messenger -->
+    <button onclick="clearMessenger()">Clear Messenger</button>
+    <!-- <button onclick="toaster()">Survey</button> -->
 
     <script type="text/javascript">
       // Enable button
@@ -268,6 +271,18 @@
         })
         .catch((error) => {
           console.error("Failed to clear conversation: ", error);
+        });
+    }
+
+    function clearMessenger() {
+      console.log("Attempting to clear Messenger...");
+
+      window.Genesys("command", "Messenger.clear")
+        .then(() => {
+          console.log("Conversation successfully cleared.");
+        })
+        .catch((error) => {
+          console.error("Failed to clear Messenger: ", error);
         });
     }
 
