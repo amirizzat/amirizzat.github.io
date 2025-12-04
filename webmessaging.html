@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Genesys Cloud Web Messaging – Demo Page</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genesys Cloud Web Messaging SDK</title>
 
-    <!-- Genesys Cloud Web Messaging Bootstrap -->
+    <!-- Genesys Cloud Web Messaging Bootstrap Script -->
     <script type="text/javascript">
         (function (g, e, n, es, ys) {
             g["_genesysJs"] = e;
@@ -28,189 +28,230 @@
             "https://apps.mypurecloud.com.au/genesys-bootstrap/genesys.min.js",
             {
                 deploymentId: "bc38d408-bca9-449e-9273-24e848e2a317",
-                environment: "apse2",
+                environment: "apse2"
             }
         );
     </script>
 
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f6f6f6;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f2f4f7;
+            margin: 0;
             padding: 20px;
         }
 
         h1 {
             text-align: center;
+            margin-top: 10px;
         }
 
         .card {
-            background: white;
-            padding: 20px;
+            background: #fff;
+            width: 90%;
+            max-width: 700px;
             margin: 20px auto;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 800px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            padding: 20px 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            margin-top: 0;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
         }
 
         button {
             width: 100%;
-            padding: 12px;
-            margin-top: 10px;
+            padding: 14px;
+            margin: 8px 0;
             border: none;
-            background: #0476d0;
+            background: #0077d8;
             color: white;
+            font-size: 16px;
             border-radius: 6px;
             cursor: pointer;
         }
 
         button:hover {
-            background: #005fa8;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
+            background: #005bb0;
         }
 
         #logBox {
             background: black;
             color: #00ff00;
-            padding: 10px;
-            height: 200px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: Consolas, monospace;
+            height: 220px;
             overflow-y: auto;
-            font-family: monospace;
-            border-radius: 6px;
+            margin-top: 10px;
         }
     </style>
 </head>
 
 <body>
-    <h1>Genesys Cloud Web Messaging SDK – Feature Showcase</h1>
 
-    <!-- USER INPUT -->
-    <div class="card">
-        <h2>User Information</h2>
-        <input id="name" class="input-field" placeholder="Customer Name" />
-        <input id="email" class="input-field" placeholder="Customer Email" />
-        <input id="phone" class="input-field" placeholder="Phone Number" />
-        
-        <button onclick="openMessenger()">Open Messenger</button>
-        <button onclick="setAttributes()">Set Customer Attributes</button>
-    </div>
+<h1>Genesys Cloud Web Messaging SDK – Feature Showcase</h1>
 
-    <!-- COMMAND FEATURES -->
-    <div class="card">
-        <h2>Messenger Controls</h2>
-        <button onclick="clearConversation()">Clear Conversation</button>
-        <button onclick="clearMessenger()">Clear Messenger</button>
-        <button onclick="sendCustomEvent()">Send Custom Event</button>
-        <button onclick="openToaster()">Show Toaster Notification</button>
-    </div>
+<!-- USER INFO CARD -->
+<div class="card">
+    <h2>User Information</h2>
 
-    <!-- LOG PANEL -->
-    <div class="card">
-        <h2>Event Log</h2>
-        <div id="logBox"></div>
-    </div>
+    <input id="name" type="text" placeholder="Customer Name">
+    <input id="email" type="text" placeholder="Customer Email">
+    <input id="phone" type="text" placeholder="Phone Number">
+
+    <button onclick="openMessenger()">Open Messenger</button>
+    <button onclick="setAttributes()">Set Customer Attributes</button>
+</div>
+
+<!-- COMMANDS CARD -->
+<div class="card">
+    <h2>Messaging Controls</h2>
+
+    <button onclick="clearConversation()">Clear Conversation</button>
+    <button onclick="clearMessenger()">Clear Messenger</button>
+    <button onclick="sendCustomEvent()">Send Custom Event</button>
+    <button onclick="openToaster()">Show Toaster Notification</button>
+</div>
+
+<!-- LOGS CARD -->
+<div class="card">
+    <h2>Event Log</h2>
+    <div id="logBox"></div>
+</div>
 
 <script>
-/* Utility for showing logs to the UI */
-function log(msg) {
-    console.log(msg);
-    const box = document.getElementById("logBox");
-    box.innerHTML += msg + "<br>";
-    box.scrollTop = box.scrollHeight;
+/* ======================================================
+   Utility Logging Function
+   ====================================================== */
+function log(message) {
+    console.log(message);
+    const logBox = document.getElementById("logBox");
+    logBox.innerHTML += message + "<br>";
+    logBox.scrollTop = logBox.scrollHeight;
 }
 
-/* Messenger.open */
+/* ======================================================
+   Open Messenger
+   ====================================================== */
 function openMessenger() {
     log("Opening Messenger...");
 
     Genesys("command", "Messenger.open", {},
-        function () { log("Messenger opened."); },
-        function (err) { log("Messenger open FAILED: " + JSON.stringify(err)); }
+        () => log("Messenger opened."),
+        (err) => log("Messenger open FAILED: " + JSON.stringify(err))
     );
 }
 
-/* Set custom attributes */
+/* ======================================================
+   Set Customer Attributes (CORRECT STRUCTURE)
+   ====================================================== */
 function setAttributes() {
     log("Setting customer attributes...");
 
+    const custName = document.getElementById("name").value;
+    const custEmail = document.getElementById("email").value;
+    const custPhone = document.getElementById("phone").value;
+
     Genesys("command", "Database.set", {
         messaging: {
+            customer: {
+                name: custName,
+                email: custEmail,
+                phone: custPhone
+            },
             customAttributes: {
-                name: document.getElementById("name").value,
-                email: document.getElementById("email").value,
-                phone: document.getElementById("phone").value
+                demoTimestamp: new Date().toISOString()
             }
         }
     });
 
-    log("Attributes updated.");
+    log("Customer attributes updated in messaging.customer");
 }
 
-/* Clear conversation */
+/* ======================================================
+   Clear Conversation
+   ====================================================== */
 function clearConversation() {
     log("Clearing conversation...");
 
     Genesys("command", "MessagingService.clearConversation", {},
-        function () { log("Conversation cleared."); },
-        function (error) { log("Failed clearing conversation: " + JSON.stringify(error)); }
+        () => log("Conversation cleared."),
+        (err) => log("Conversation clear FAILED: " + JSON.stringify(err))
     );
 }
 
-/* Clear Messenger widget */
+/* ======================================================
+   Clear Messenger
+   ====================================================== */
 function clearMessenger() {
-    log("Clearing Messenger widget...");
+    log("Clearing Messenger...");
 
     Genesys("command", "Messenger.clear", {},
-        function () { log("Messenger cleared."); },
-        function (error) { log("Messenger clear FAILED: " + JSON.stringify(error)); }
+        () => log("Messenger cleared."),
+        (err) => log("Messenger clear FAILED: " + JSON.stringify(err))
     );
 }
 
-/* Send a custom event */
+/* ======================================================
+   Send Custom Event
+   ====================================================== */
 function sendCustomEvent() {
     log("Sending custom event: demoEvent");
 
     Genesys("command", "MessagingService.sendEvent", {
         eventName: "demoEvent",
-        data: { clickedAt: new Date().toISOString() }
+        data: {
+            clickedAt: new Date().toISOString(),
+            demo: true
+        }
     });
 }
 
-/* Toaster Notification */
+/* ======================================================
+   Toaster Notifications
+   ====================================================== */
 function openToaster() {
-    log("Opening toaster notification...");
+    log("Opening toaster...");
 
     Genesys("subscribe", "Toaster.ready", () => {
         Genesys(
             "command",
             "Toaster.open",
             {
-                title: "Demo Survey",
-                body: "Would you like to take our feedback survey?",
+                title: "Demo Notification",
+                body: "Would you like to take a survey?",
                 buttons: { type: "binary", primary: "Yes", secondary: "No" }
             },
-            () => log("Toaster is opened."),
+            () => log("Toaster opened."),
             (err) => log("Toaster FAILED: " + JSON.stringify(err))
         );
     });
 }
 
-/* Subscriptions */
+/* ======================================================
+   Event Subscriptions
+   ====================================================== */
 Genesys("subscribe", "Messenger.ready", function () {
-    log("Messenger READY event fired.");
+    log("Messenger READY");
 
     Genesys("subscribe", "MessagingService.conversationUpdated", function (event) {
         log("[Event] conversationUpdated → " + JSON.stringify(event));
     });
 
-    Genesys("subscribe", "MessagingService.messageReceived", function (msg) {
-        log("[Event] messageReceived → " + JSON.stringify(msg));
+    Genesys("subscribe", "MessagingService.messageReceived", function (event) {
+        log("[Event] messageReceived → " + JSON.stringify(event));
     });
 });
 </script>
