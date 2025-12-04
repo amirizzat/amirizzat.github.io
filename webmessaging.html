@@ -56,10 +56,6 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
-        .card h2 {
-            margin-top: 0;
-        }
-
         input {
             width: 100%;
             padding: 12px;
@@ -133,13 +129,13 @@
 
 <script>
 /* ======================================================
-   Utility Logging Function
+   Logging Helper
    ====================================================== */
 function log(message) {
     console.log(message);
-    const logBox = document.getElementById("logBox");
-    logBox.innerHTML += message + "<br>";
-    logBox.scrollTop = logBox.scrollHeight;
+    const box = document.getElementById("logBox");
+    box.innerHTML += message + "<br>";
+    box.scrollTop = box.scrollHeight;
 }
 
 /* ======================================================
@@ -155,7 +151,7 @@ function openMessenger() {
 }
 
 /* ======================================================
-   Set Customer Attributes (CORRECT STRUCTURE)
+   Set Custom Attributes (kept as YOU requested)
    ====================================================== */
 function setAttributes() {
     log("Setting customer attributes...");
@@ -164,18 +160,18 @@ function setAttributes() {
     const custEmail = document.getElementById("email").value;
     const custPhone = document.getElementById("phone").value;
 
-      Genesys("command", "Database.set", {
+    Genesys("command", "Database.set", {
         messaging: {
-          customAttributes: {
-            name: custName,
-            customerName: custName,
-            Email: custEmail,
-            Phone: custPhone
-          }
+            customAttributes: {
+                name: custName,
+                customerName: custName,
+                Email: custEmail,
+                Phone: custPhone
+            }
         }
-      });
+    });
 
-    log("Customer attributes updated in messaging.customer");
+    log("Custom attributes updated.");
 }
 
 /* ======================================================
@@ -206,7 +202,7 @@ function clearMessenger() {
    Send Custom Event
    ====================================================== */
 function sendCustomEvent() {
-    log("Sending custom event: demoEvent");
+    log("Sending custom event...");
 
     Genesys("command", "MessagingService.sendEvent", {
         eventName: "demoEvent",
@@ -218,7 +214,7 @@ function sendCustomEvent() {
 }
 
 /* ======================================================
-   Toaster Notifications
+   Toaster Notification
    ====================================================== */
 function openToaster() {
     log("Opening toaster...");
@@ -239,9 +235,14 @@ function openToaster() {
 }
 
 /* ======================================================
-   Event Subscriptions
+   Subscriptions — with SINGLE execution guard
    ====================================================== */
+let messengerReadySubscribed = false;
+
 Genesys("subscribe", "Messenger.ready", function () {
+    if (messengerReadySubscribed) return;
+    messengerReadySubscribed = true;
+
     log("Messenger READY");
 
     Genesys("subscribe", "MessagingService.conversationUpdated", function (event) {
