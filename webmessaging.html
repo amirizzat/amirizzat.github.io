@@ -107,9 +107,9 @@
 <div class="card">
     <h2>User Information</h2>
 
-    <input id="name" type="text" placeholder="Customer Name">
-    <input id="email" type="text" placeholder="Customer Email">
-    <input id="phone" type="text" placeholder="Phone Number">
+    <input id="name" type="text" placeholder="Customer Name" value="John Doe">
+    <input id="email" type="text" placeholder="Customer Email" value="john.doe@example.com">
+    <input id="phone" type="text" placeholder="Phone Number" value="+61412345678">
 
     <button onclick="openMessenger()">Open Messenger</button>
     <button onclick="setAttributes()">Set Customer Attributes</button>
@@ -164,18 +164,16 @@ function setAttributes() {
     const custEmail = document.getElementById("email").value;
     const custPhone = document.getElementById("phone").value;
 
-    Genesys("command", "Database.set", {
+      Genesys("command", "Database.set", {
         messaging: {
-            customer: {
-                name: custName,
-                email: custEmail,
-                phone: custPhone
-            },
-            customAttributes: {
-                demoTimestamp: new Date().toISOString()
-            }
+          customAttributes: {
+            name: custName,
+            customerName: custName,
+            Email: custEmail,
+            Phone: custPhone
+          }
         }
-    });
+      });
 
     log("Customer attributes updated in messaging.customer");
 }
