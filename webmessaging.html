@@ -28,12 +28,7 @@
             "https://apps.mypurecloud.com.au/genesys-bootstrap/genesys.min.js",
             {
                 deploymentId: "bc38d408-bca9-449e-9273-24e848e2a317",
-                environment: "apse2",
-				debug: true,
-				messenger: {
-					autoStart: true,
-					openOnLoad: true,
-				},
+                environment: "apse2"
             }
         );
     </script>
@@ -260,7 +255,10 @@ Genesys("subscribe", "Messenger.ready", function () {
 });
 
 /* ======================================================
-    Run on page load:
+   NEW SESSION MANAGEMENT LOGIC
+   - Wait for MessagingService.ready
+   - If restored → clear session then startConversation
+   - If NOT restored → startConversation after 500ms
    ====================================================== */
 let restoredSession = false;
 
@@ -290,7 +288,6 @@ Genesys("subscribe", "MessagingService.restored", ({ data }) => {
 Genesys("subscribe", "MessagingService.ready", () => {
     log("MessagingService is now READY");
 
-    // Delay ZERO — but put callback at END of execution queue
     setTimeout(() => {
         if (!restoredSession) {
             log("No restored session → starting NEW conversation");
@@ -303,9 +300,8 @@ Genesys("subscribe", "MessagingService.ready", () => {
                 (err) => log("startConversation FAILED: " + JSON.stringify(err))
             );
         }
-    }, 0);
+    }, 500);  // reliable delay for restored to fire if needed
 });
-
 
 </script>
 
