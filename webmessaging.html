@@ -235,7 +235,7 @@ function openToaster() {
 }
 
 /* ======================================================
-   Subscriptions — Messenger.ready guard
+   Messenger.ready – just for logging / extra subscriptions
    ====================================================== */
 let messengerReadySubscribed = false;
 
@@ -255,65 +255,73 @@ Genesys("subscribe", "Messenger.ready", function () {
 });
 
 /* ======================================================
-   OPTIMIZED STARTUP FLOW
-   Prevents double conversation starts
-   Ensures clean session handling
+   OPTIONAL: Log restored, but don't use it for logic
    ====================================================== */
-
-let restoredSession = false;
-let startupCompleted = false;
-
-// Subscribe early: captures restored session if it happens
-const waitForRestored = new Promise(resolve => {
-    Genesys("subscribe", "MessagingService.restored", ({ data }) => {
-        restoredSession = true;
-        log("MessagingService RESTORED → old session detected");
-        resolve("restored");
-    });
+Genesys("subscribe", "MessagingService.restored", ({ data }) => {
+    log("MessagingService RESTORED (ignored for control flow) → " + JSON.stringify(data));
 });
 
-// 1.2s timeout fallback (Genesys recommended safe threshold)
-const restoredTimeout = new Promise(resolve =>
-    setTimeout(() => resolve("timeout"), 1200)
-);
+/* ======================================================
+   OPTIMIZED STARTUP FLOW:
+   - Always force fresh session on load
+   - Ignore restored for logic; just nuke any old state
+   ====================================================== */
 
-Genesys("subscribe", "MessagingService.ready", async () => {
-    log("MessagingService is now READY");
+Genesys("subscribe", "MessagingService.ready", () => {
+    log("MessagingService is now READY – forcing fresh session");
 
-    const result = await Promise.race([waitForRestored, restoredTimeout]);
+    // 1) Best-effort clear any previous conversation
+    Genesys("command", "MessagingService.clearConversation", {},
+        () => log("Any previous conversation cleared (or none existed)."),
+        (err) => log("clearConversation error (non-fatal): " + JSON.stringify(err))
+    );
 
-    if (startupCompleted) return;
-    startupCompleted = true;
+    // 2) Clear session, then 3) clear messenger cache, then 4) start new conversation
+    Genesys(
+        "command",
+        "MessagingService.clearSession",
+        {},
+        () => {
+            log("Any previous session cleared (or none existed).");
 
-    if (result === "restored") {
-        Genesys(
-            "command",
-            "MessagingService.clearSession",
-            {},
-            () => {
-                log("Old session CLEARED");
+            Genesys(
+                "command",
+                "Messenger.clear",
+                {},
+                () => {
+                    log("Messenger cache cleared.");
 
-                Genesys(
-                    "command",
-                    "MessagingService.startConversation",
-                    {},
-                    () => log("NEW CONVERSATION started (after restore cleanup)"),
-                    err => log("startConversation FAILED: " + JSON.stringify(err))
-                );
-            },
-            err => log("clearSession FAILED: " + JSON.stringify(err))
-        );
-    } else {
-        log("No restored session → starting NEW conversation");
-
-        Genesys(
-            "command",
-            "MessagingService.startConversation",
-            {},
-            () => log("NEW CONVERSATION started (fresh load)"),
-            err => log("startConversation FAILED: " + JSON.stringify(err))
-        );
-    }
+                    Genesys(
+                        "command",
+                        "MessagingService.startConversation",
+                        {},
+                        () => log("NEW CONVERSATION started (fresh session)."),
+                        (err) => log("startConversation FAILED: " + JSON.stringify(err))
+                    );
+                },
+                (err) => {
+                    log("Messenger.clear FAILED (continuing to start new conversation): " + JSON.stringify(err));
+                    Genesys(
+                        "command",
+                        "MessagingService.startConversation",
+                        {},
+                        () => log("NEW CONVERSATION started (even though Messenger.clear failed)."),
+                        (err2) => log("startConversation FAILED: " + JSON.stringify(err2))
+                    );
+                }
+            );
+        },
+        (err) => {
+            log("clearSession FAILED (continuing with fresh conversation anyway): " + JSON.stringify(err));
+            Genesys(
+                "command",
+                "MessagingService.startConversation",
+                {},
+                () => log("NEW CONVERSATION started (even though clearSession failed)."),
+                (err2) => log("startConversation FAILED: " + JSON.stringify(err2))
+            );
+        }
+    );
 });
 </script>
 
