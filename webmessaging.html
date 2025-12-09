@@ -253,6 +253,28 @@ Genesys("subscribe", "Messenger.ready", function () {
         log("[Event] messageReceived → " + JSON.stringify(event));
     });
 });
+
+/* ======================================================
+   NEW FEATURE ✔ Run on page load:
+   - MessagingService.ready
+   - MessagingService.restored → clearSession
+   ====================================================== */
+Genesys("subscribe", "MessagingService.ready", () => {
+    log("MessagingService is now READY");
+
+    Genesys("subscribe", "MessagingService.restored", ({ data }) => {
+        log("MessagingService RESTORED → old session detected");
+
+        Genesys(
+            "command",
+            "MessagingService.clearSession",
+            {},
+            () => log("Old session CLEARED"),
+            (err) => log("ClearSession FAILED: " + JSON.stringify(err))
+        );
+    });
+});
+
 </script>
 
 </body>
