@@ -260,42 +260,37 @@ Genesys("subscribe", "Messenger.ready", function () {
 });
 
 /* ======================================================
-   NEW FEATURE ✔ Run on page load:
-   - MessagingService.ready
-   - MessagingService.restored → clearSession
+    Run on page load:
    ====================================================== */
 let restoredSession = false;
+
+Genesys("subscribe", "MessagingService.restored", ({ data }) => {
+    restoredSession = true;
+    log("MessagingService RESTORED → old session detected");
+
+    Genesys(
+        "command",
+        "MessagingService.clearSession",
+        {},
+        () => {
+            log("Old session CLEARED");
+
+            Genesys(
+                "command",
+                "MessagingService.startConversation",
+                {},
+                () => log("New conversation STARTED (after restore cleanup)"),
+                (err) => log("startConversation FAILED: " + JSON.stringify(err))
+            );
+        },
+        (err) => log("clearSession FAILED: " + JSON.stringify(err))
+    );
+});
 
 Genesys("subscribe", "MessagingService.ready", () => {
     log("MessagingService is now READY");
 
-    // If a restored conversation exists
-    Genesys("subscribe", "MessagingService.restored", ({ data }) => {
-        restoredSession = true;
-        log("MessagingService RESTORED → old session detected");
-
-        // 1. Clear the old session
-        Genesys(
-            "command",
-            "MessagingService.clearSession",
-            {},
-            () => {
-                log("Old session CLEARED");
-
-                // 2. Start a new conversation
-                Genesys(
-                    "command",
-                    "MessagingService.startConversation",
-                    {},
-                    () => log("New conversation STARTED (after restore cleanup)"),
-                    (err) => log("startConversation FAILED: " + JSON.stringify(err))
-                );
-            },
-            (err) => log("clearSession FAILED: " + JSON.stringify(err))
-        );
-    });
-
-    // DELAY startConversation until restored has had a chance to fire
+    // Delay ZERO — but put callback at END of execution queue
     setTimeout(() => {
         if (!restoredSession) {
             log("No restored session → starting NEW conversation");
@@ -308,8 +303,9 @@ Genesys("subscribe", "MessagingService.ready", () => {
                 (err) => log("startConversation FAILED: " + JSON.stringify(err))
             );
         }
-    }, 300); // small delay so 'restored' can fire if needed
+    }, 0);
 });
+
 
 </script>
 
