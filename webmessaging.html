@@ -235,7 +235,7 @@ function openToaster() {
 }
 
 /* ======================================================
-   Subscriptions — with SINGLE execution guard
+   Subscriptions — Messenger.ready guard
    ====================================================== */
 let messengerReadySubscribed = false;
 
@@ -255,54 +255,66 @@ Genesys("subscribe", "Messenger.ready", function () {
 });
 
 /* ======================================================
-   NEW SESSION MANAGEMENT LOGIC
-   - Wait for MessagingService.ready
-   - If restored → clear session then startConversation
-   - If NOT restored → startConversation after 500ms
+   OPTIMIZED STARTUP FLOW
+   Prevents double conversation starts
+   Ensures clean session handling
    ====================================================== */
+
 let restoredSession = false;
+let startupCompleted = false;
 
-Genesys("subscribe", "MessagingService.restored", ({ data }) => {
-    restoredSession = true;
-    log("MessagingService RESTORED → old session detected");
-
-    Genesys(
-        "command",
-        "MessagingService.clearSession",
-        {},
-        () => {
-            log("Old session CLEARED");
-
-            Genesys(
-                "command",
-                "MessagingService.startConversation",
-                {},
-                () => log("New conversation STARTED (after restore cleanup)"),
-                (err) => log("startConversation FAILED: " + JSON.stringify(err))
-            );
-        },
-        (err) => log("clearSession FAILED: " + JSON.stringify(err))
-    );
+// Subscribe early: captures restored session if it happens
+const waitForRestored = new Promise(resolve => {
+    Genesys("subscribe", "MessagingService.restored", ({ data }) => {
+        restoredSession = true;
+        log("MessagingService RESTORED → old session detected");
+        resolve("restored");
+    });
 });
 
-Genesys("subscribe", "MessagingService.ready", () => {
+// 1.2s timeout fallback (Genesys recommended safe threshold)
+const restoredTimeout = new Promise(resolve =>
+    setTimeout(() => resolve("timeout"), 1200)
+);
+
+Genesys("subscribe", "MessagingService.ready", async () => {
     log("MessagingService is now READY");
 
-    setTimeout(() => {
-        if (!restoredSession) {
-            log("No restored session → starting NEW conversation");
+    const result = await Promise.race([waitForRestored, restoredTimeout]);
 
-            Genesys(
-                "command",
-                "MessagingService.startConversation",
-                {},
-                () => log("New conversation STARTED (fresh load)"),
-                (err) => log("startConversation FAILED: " + JSON.stringify(err))
-            );
-        }
-    }, 500);  // reliable delay for restored to fire if needed
+    if (startupCompleted) return;
+    startupCompleted = true;
+
+    if (result === "restored") {
+        Genesys(
+            "command",
+            "MessagingService.clearSession",
+            {},
+            () => {
+                log("Old session CLEARED");
+
+                Genesys(
+                    "command",
+                    "MessagingService.startConversation",
+                    {},
+                    () => log("NEW CONVERSATION started (after restore cleanup)"),
+                    err => log("startConversation FAILED: " + JSON.stringify(err))
+                );
+            },
+            err => log("clearSession FAILED: " + JSON.stringify(err))
+        );
+    } else {
+        log("No restored session → starting NEW conversation");
+
+        Genesys(
+            "command",
+            "MessagingService.startConversation",
+            {},
+            () => log("NEW CONVERSATION started (fresh load)"),
+            err => log("startConversation FAILED: " + JSON.stringify(err))
+        );
+    }
 });
-
 </script>
 
 </body>
